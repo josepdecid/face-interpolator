@@ -1,0 +1,2 @@
+FOLDER_DATASETS = 'datasets'
+CELEBA_DATASET = 'CelebA'
