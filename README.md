@@ -35,4 +35,5 @@ datasets
   
       ┕ Eval: Contains the file with the data partitions for train, validation and test.
   
-      ┕ Img: Contains all the jpg images from the dataset.```
+      ┕ Img: Contains all the jpg images from the dataset.
+```
