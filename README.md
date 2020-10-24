@@ -24,14 +24,15 @@ We use the data from the [CelebA Dataset](http://mmlab.ie.cuhk.edu.hk/projects/C
 
 Download the dataset from their website and extract it to `datasets` folder.
 
-The following structure must be followed:
+The following folder structure must be followed:
 
+```
 datasets
 
-&nbsp;┕ CelebA
+  ┕ CelebA
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┕ Anno: Contains all the annotation txt files.
+      ┕ Anno: Contains all the annotation txt files.
   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┕ Eval: Contains the file with the data partitions for train, validation and test.
+      ┕ Eval: Contains the file with the data partitions for train, validation and test.
   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┕ Img: Contains all the jpg images from the dataset.
+      ┕ Img: Contains all the jpg images from the dataset.```
