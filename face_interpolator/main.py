@@ -1,7 +1,7 @@
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
-from data.celeba_dataset import CelebaDataset
+from face_interpolator.data.celeba_dataset import CelebaDataset
 
 if __name__ == '__main__':
     # TODO: Define config file

@@ -1,7 +1,7 @@
 from PIL import Image
 from torch.utils.data import Dataset
 
-from src.utils.system import join_path
+from face_interpolator.utils.system import join_path
 
 
 class CelebaDataset(Dataset):
