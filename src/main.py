@@ -1,9 +1,7 @@
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
-from constants import FOLDER_DATASETS, CELEBA_DATASET
 from data.celeba_dataset import CelebaDataset
-from utils.system import join_path
 
 if __name__ == '__main__':
     # TODO: Define config file
@@ -12,9 +10,9 @@ if __name__ == '__main__':
 
     transform = transforms.Compose([transforms.ToTensor()])
 
-    train_set = CelebaDataset(join_path('..', FOLDER_DATASETS, CELEBA_DATASET), split='train', transform=transform)
-    val_set = CelebaDataset(join_path('..', FOLDER_DATASETS, CELEBA_DATASET), split='val', transform=transform)
-    test_set = CelebaDataset(join_path('..', FOLDER_DATASETS, CELEBA_DATASET), split='test', transform=transform)
+    train_set = CelebaDataset('../datasets/CelebA', split='train', transform=transform)
+    val_set = CelebaDataset('../datasets/CelebA', split='val', transform=transform)
+    test_set = CelebaDataset('../datasets/CelebA', split='test', transform=transform)
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
