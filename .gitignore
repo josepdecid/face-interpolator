@@ -133,3 +133,6 @@ dmypy.json
 
 # Datasets
 datasets/*
+
+# Lightning logs
+face_interpolator/lightning_logs
