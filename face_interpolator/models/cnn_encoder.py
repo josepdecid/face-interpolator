@@ -4,7 +4,7 @@ import torch.nn as nn
 
 class CNNEncoder(pl.LightningModule):
     """
-    Convolutional Decoder module.
+    Convolutional Encoder module.
 
     Args:
         - bottleneck_size (int): output size of the last linear layer.
