@@ -50,11 +50,15 @@ python {params['launcher']}
     with open('launcher.sh', mode='w') as f:
         f.write(bash_data)
 
-    print('Login into cluster')
-    print('Uploading codebase')
-    subprocess.run(f'scp -r {" ".join(DATA_TO_UPLOAD)} {args.user}@dt01.bsc.es:~/face-interpolator/.')
+    upload_command = f'scp -i .ssh/id_rsa -r {" ".join(DATA_TO_UPLOAD)} {args.user}@dt01.bsc.es:~/face-interpolator/.'
+    execute_command = f'ssh -i .ssh/id_rsa -t {args.user}@plogin1.bsc.es "cd face-interpolator; bash launcher.sh"'
 
-    print('Executing job')
-    subprocess.run(f'ssh -t {args.user}@plogin1.bsc.es "cd face-interpolator; bash launcher.sh"')
+    print('[UPLOADING CODEBASE]')
+    print(f'> {upload_command}')
+    subprocess.run(upload_command)
+
+    print('[EXECUTING JOB]')
+    print(f'> {execute_command}')
+    subprocess.run(execute_command)
 
     os.remove('launcher.sh')
