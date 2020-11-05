@@ -37,4 +37,4 @@ class ConvVAE(AutoEncoderModel):
         return mu, logvar
 
     def decode(self, x: torch.Tensor) -> torch.Tensor:
-        raise self.decoder(x)
+        return self.decoder(x)
