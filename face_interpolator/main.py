@@ -6,7 +6,8 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
-from face_interpolator.data.celeba_dataset import CelebaDataset
+from data.celeba_dataset import CelebaDataset
+from utils.system import join_path
 from models.cnn_vae import ConvVAE
 
 if __name__ == '__main__':
@@ -16,7 +17,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # TODO: Define config file
-    dataset_root = '../datasets/CelebA'
+    dataset_root = join_path('..', 'datasets', 'CelebA')
     batch_size = 64
     num_workers = 0
 
@@ -30,10 +31,10 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
-    logger = TensorBoardLogger(f'../output/{args.job_name}/tb_logs', name='')
+    logger = TensorBoardLogger(join_path('..', 'output', args.job_name, 'tb_logs'), name='')
     checkpoint_callback = ModelCheckpoint(
         monitor='val_loss',
-        dirpath=f'../output/{args.job_name}/checkpoints',
+        dirpath=join_path('..', 'output', args.job_name, 'checkpoints'),
         filename=args.job_name + '-{epoch:02d}-{val_loss:.2f}',
         save_top_k=3,
         mode='min')
