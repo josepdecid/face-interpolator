@@ -33,5 +33,5 @@ def train():
         mode='min')
 
     model = ConvVAE(bottleneck_size)
-    trainer = Trainer.from_argparse_args(args, logger=logger)
-    trainer.fit(model, datamodule=celebA_data_module, callbacks=[checkpoint_callback])
+    trainer = Trainer.from_argparse_args(args, logger=logger, callbacks=[checkpoint_callback])
+    trainer.fit(model, datamodule=celebA_data_module)

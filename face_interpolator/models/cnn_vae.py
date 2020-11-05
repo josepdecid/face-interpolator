@@ -4,6 +4,7 @@ from .cnn import CNNEncoder
 from .model import AutoEncoderModel
 from typing import Any
 import torch
+import pytorch_lightning as pl
 
 
 class ConvVAE(AutoEncoderModel):
