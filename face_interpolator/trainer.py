@@ -17,17 +17,17 @@ def train():
     args = parser.parse_args()
 
     # TODO: Define config file
-    dataset_root = os.path.join('..', 'datasets', 'CelebA')
+    dataset_root = os.path.join('datasets', 'CelebA')
     batch_size = 64
     num_workers = 0
     bottleneck_size = 40
 
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
 
-    logger = TensorBoardLogger(join_path('..', 'output', args.job_name, 'tb_logs'), name='')
+    logger = TensorBoardLogger(join_path('output', args.job_name, 'tb_logs'), name='')
     checkpoint_callback = ModelCheckpoint(
         monitor='val_loss',
-        dirpath=join_path('..', 'output', args.job_name, 'checkpoints'),
+        dirpath=join_path('output', args.job_name, 'checkpoints'),
         filename=args.job_name + '-{epoch:02d}-{val_loss:.2f}',
         save_top_k=3,
         mode='min')
