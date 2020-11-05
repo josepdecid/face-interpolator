@@ -136,4 +136,7 @@ dmypy.json
 datasets/*
 
 # Lightning logs
-face_interpolator/lightning_logs
+face_interpolator/lightning_logs/*
+
+# Logs
+output/*
