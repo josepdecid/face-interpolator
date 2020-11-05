@@ -16,7 +16,7 @@ class AutoEncoderModel(pl.LightningDataModule, ABC):
         decoded, mu, logvar = self(x)
 
         # log images
-        if batch_idx % 10 == 0:
+        if batch_idx % 100 == 0:
             decoded_images = decoded.type_as(x)
             grid_input = torchvision.utils.make_grid(x[:6])
             grid_decoded = torchvision.utils.make_grid(decoded_images[:6])

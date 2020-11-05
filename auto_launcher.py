@@ -44,14 +44,14 @@ module purge
 module load {' '.join(P9_MODULES)}
 
 export PYTHONPATH=face_interpolator
-python {params['launcher']}
+python {params['launcher']} {params['args']}
 """
 
     with open('launcher.sh', mode='w') as f:
         f.write(bash_data)
 
     upload_command = f'scp -i .ssh/id_rsa -r {" ".join(DATA_TO_UPLOAD)} {args.user}@dt01.bsc.es:~/face-interpolator/.'
-    execute_command = f'ssh -i .ssh/id_rsa -t {args.user}@plogin1.bsc.es "cd face-interpolator; bash launcher.sh"'
+    execute_command = f'ssh -i .ssh/id_rsa -t {args.user}@plogin1.bsc.es "cd face-interpolator; sbatch launcher.sh"'
 
     print('[UPLOADING CODEBASE]')
     print(f'> {upload_command}')
