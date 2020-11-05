@@ -2,10 +2,12 @@ from argparse import ArgumentParser
 
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 import os
 from face_interpolator.data.celeba_dataset import CelebADataModule
 from .models.cnn_vae import ConvVAE
+from .utils.system import join_path
 
 
 def train():
@@ -21,7 +23,6 @@ def train():
 
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
 
-    logger = TensorBoardLogger('tb_logs')
     logger = TensorBoardLogger(join_path('..', 'output', args.job_name, 'tb_logs'), name='')
     checkpoint_callback = ModelCheckpoint(
         monitor='val_loss',
