@@ -58,19 +58,11 @@ python {params['launcher']} {params['args']}
     print('[UPLOADING CODEBASE]')
     print(f'> {upload_command}')
 
-    try:
-        subprocess.run(upload_command)
-    except BaseException as e:
-        print(upload_command)
-        raise RuntimeError(e)
+    subprocess.run(upload_command)
 
     print('[EXECUTING JOB]')
     print(f'> {execute_command}')
 
-    try:
-        subprocess.run(execute_command)
-    except BaseException as e:
-        print(execute_command)
-        raise RuntimeError(e)
+    subprocess.run(execute_command)
 
     os.remove('launcher.sh')

@@ -17,8 +17,4 @@ if __name__ == '__main__':
         params = json.load(config_file)
 
     command = f'{sys.executable} {params["launcher"]} {params["args"]}'
-    try:
-        subprocess.run(command)
-    except BaseException as e:
-        print(command)
-        raise RuntimeError(e)
+    subprocess.run(command)
