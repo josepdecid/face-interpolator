@@ -12,8 +12,9 @@ if __name__ == '__main__':
     parser.add_argument('config', type=str)
     args = parser.parse_args()
 
-    config_file_name = os.path.join('..', CONFIGS_DIR, f'{args.config}.json')
+    config_file_name = os.path.join(CONFIGS_DIR, f'{args.config}.json')
     with open(config_file_name) as config_file:
         params = json.load(config_file)
 
-    subprocess.run(f'{sys.executable} {params["launcher"]} {params["args"]}')
+    command = f'{sys.executable} {params["launcher"]} {params["args"]}'
+    subprocess.run(command)

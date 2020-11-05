@@ -1,3 +1,6 @@
+from typing import Any
+
+import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
@@ -66,7 +69,6 @@ class CelebaDataset(Dataset):
     @staticmethod
     def get_images_from_data_split(root, split):
         split_index_dict = {'train': '0', 'val': '1', 'test': '2'}
-
         split_index = split_index_dict[split]
         file_names_list = []
         with open(join_path(root, 'Eval', 'list_eval_partition.txt'), 'r') as split_file:
@@ -88,6 +90,10 @@ class CelebADataModule(pl.LightningDataModule):
         self.num_workers = num_workers
 
         self.transform = transforms.Compose([transforms.ToTensor()])
+
+        self.train_set = None
+        self.val_set = None
+        self.test_set = None
 
     def prepare_data(self):
         pass

@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, ABCMeta
 
 import pytorch_lightning as pl
 import torchvision
@@ -8,7 +8,7 @@ import torch
 from typing import Any
 
 
-class AutoEncoderModel(pl.LightningDataModule, ABC):
+class AutoEncoderModel(pl.LightningModule, ABC):
 
     def training_step(self, batch, batch_idx):
         # training_step defined the train loop. It is independent of forward
