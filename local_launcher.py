@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 from argparse import ArgumentParser
 
 import os
@@ -15,4 +16,4 @@ if __name__ == '__main__':
     with open(config_file_name) as config_file:
         params = json.load(config_file)
 
-    subprocess.run(f'python {params["launcher"]} {params["args"]}')
+    subprocess.run(f'{sys.executable} {params["launcher"]} {params["args"]}')
