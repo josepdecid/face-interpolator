@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 
 import os
 
-from constants import CONFIGS_DIR
+from face_interpolator.constants import CONFIGS_DIR
 
 if __name__ == '__main__':
     parser = ArgumentParser()

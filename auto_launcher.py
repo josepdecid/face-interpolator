@@ -5,7 +5,7 @@ from time import strftime
 
 import os
 
-from constants import CONFIGS_DIR
+from face_interpolator.constants import CONFIGS_DIR
 
 P9_MODULES = ['ibm', 'openmpi/4.0.1', 'gcc/8.3.0', 'cuda/10.2', 'cudnn/7.6.4', 'nccl/2.4.8',
               'tensorrt/6.0.1', 'fftw/3.3.8', 'ffmpeg/4.2.1', 'opencv/4.1.1', 'atlas/3.10.3',

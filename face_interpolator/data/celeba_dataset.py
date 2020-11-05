@@ -1,7 +1,11 @@
 from PIL import Image
 from torch.utils.data import Dataset
 
-from utils.system import join_path
+from face_interpolator.utils.system import join_path
+
+import pytorch_lightning as pl
+from torch.utils.data import DataLoader
+from torchvision import transforms
 
 
 class CelebaDataset(Dataset):
@@ -73,3 +77,34 @@ class CelebaDataset(Dataset):
                     file_names_list.append(words[0])
 
         return file_names_list
+
+
+class CelebADataModule(pl.LightningDataModule):
+
+    def __init__(self, dataset_root: str, batch_size: int = 64, num_workers: int = 0):
+        super().__init__()
+        self.dataset_root = dataset_root
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        self.transform = transforms.Compose([transforms.ToTensor()])
+
+    def prepare_data(self):
+        pass
+
+    def setup(self, stage=None):
+        if stage == 'fit' or stage is None:
+            self.train_set = CelebaDataset(self.dataset_root, split='train', transform=self.transform)
+            self.val_set = CelebaDataset(self.dataset_root, split='val', transform=self.transform)
+
+        if stage == 'test' or stage is None:
+            self.test_set = CelebaDataset(self.dataset_root, split='test', transform=self.transform)
+
+    def train_dataloader(self):
+        return DataLoader(self.train_set, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+
+    def val_dataloader(self):
+        return DataLoader(self.val_set, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+    def test_dataloader(self):
+        return DataLoader(self.test_set, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
