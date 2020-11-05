@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 
 from pytorch_lightning import Trainer
+from pytorch_lightning.loggers import TensorBoardLogger
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 
@@ -27,7 +28,9 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
+    logger = TensorBoardLogger('tb_logs')
+
     bottleneck_size = 40
     model = ConvVAE(bottleneck_size)
-    trainer = Trainer.from_argparse_args(args)
+    trainer = Trainer.from_argparse_args(args, logger=logger)
     trainer.fit(model, train_loader)
