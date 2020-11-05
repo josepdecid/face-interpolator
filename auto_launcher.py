@@ -5,6 +5,8 @@ from time import strftime
 
 import os
 
+import sys
+
 from face_interpolator.constants import CONFIGS_DIR
 
 P9_MODULES = ['ibm', 'openmpi/4.0.1', 'gcc/8.3.0', 'cuda/10.2', 'cudnn/7.6.4', 'nccl/2.4.8',
@@ -55,10 +57,18 @@ python {params['launcher']} {params['args']}
 
     print('[UPLOADING CODEBASE]')
     print(f'> {upload_command}')
-    subprocess.run(upload_command)
+
+    try:
+        subprocess.run(upload_command)
+    except BaseException as e:
+        print(e)
 
     print('[EXECUTING JOB]')
     print(f'> {execute_command}')
-    subprocess.run(execute_command)
+
+    try:
+        subprocess.run(execute_command)
+    except BaseException as e:
+        print(e)
 
     os.remove('launcher.sh')

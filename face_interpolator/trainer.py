@@ -13,6 +13,7 @@ from .utils.system import join_path
 def train():
     parser = ArgumentParser()
     parser = Trainer.add_argparse_args(parser)
+    parser.add_argument('--job_name', type=str)
     args = parser.parse_args()
 
     # TODO: Define config file
@@ -34,7 +35,3 @@ def train():
     model = ConvVAE(bottleneck_size)
     trainer = Trainer.from_argparse_args(args, logger=logger)
     trainer.fit(model, datamodule=celebA_data_module, callbacks=[checkpoint_callback])
-
-
-if __name__ == '__main__':
-    train()

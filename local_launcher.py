@@ -16,4 +16,7 @@ if __name__ == '__main__':
     with open(config_file_name) as config_file:
         params = json.load(config_file)
 
-    subprocess.run(f'{sys.executable} {params["launcher"]} {params["args"]}')
+    try:
+        subprocess.run(f'{sys.executable} {params["launcher"]} {params["args"]}')
+    except BaseException as e:
+        print(e)

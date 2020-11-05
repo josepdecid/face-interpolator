@@ -1,3 +1,3 @@
-from .train import train
+from .trainer import train
 
 __all__ = ['train', 'constants']
