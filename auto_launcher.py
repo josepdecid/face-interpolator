@@ -61,7 +61,8 @@ python {params['launcher']} {params['args']}
     try:
         subprocess.run(upload_command)
     except BaseException as e:
-        print(e)
+        print(upload_command)
+        raise RuntimeError(e)
 
     print('[EXECUTING JOB]')
     print(f'> {execute_command}')
@@ -69,6 +70,7 @@ python {params['launcher']} {params['args']}
     try:
         subprocess.run(execute_command)
     except BaseException as e:
-        print(e)
+        print(execute_command)
+        raise RuntimeError(e)
 
     os.remove('launcher.sh')
