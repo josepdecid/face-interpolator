@@ -3,6 +3,7 @@ import torch
 import torch.nn.functional as F
 import torch.utils.data
 import torch.utils.data
+import torchvision
 
 from models.cnn_decoder import CNNDecoder
 from models.cnn_encoder import CNNEncoder
@@ -37,6 +38,15 @@ class ConvVAE(pl.LightningModule):
         # training_step defined the train loop. It is independent of forward
         x, y = batch
         decoded, mu, logvar = self(x)
+
+        # log images
+        if batch_idx == 0:
+            decoded_images = decoded.type_as(x)
+            grid_input = torchvision.utils.make_grid(x[:6])
+            grid_decoded = torchvision.utils.make_grid(decoded_images[:6])
+            self.logger.experiment.add_image('Input Images', grid_input, self.current_epoch)
+            self.logger.experiment.add_image('Generated Images', grid_decoded, self.current_epoch)
+
         loss = F.mse_loss(decoded, x)
 
         batch_dict_output = {
@@ -46,18 +56,11 @@ class ConvVAE(pl.LightningModule):
         return batch_dict_output
 
     def training_epoch_end(self, outputs):
-        #  the function is called after every epoch is completed
+        # The function is called after every epoch is completed
+
+        # Log average loss
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
         self.logger.experiment.add_scalar("Loss/Train", avg_loss, self.current_epoch)
-        for name, params in self.named_parameters():
-            self.logger.experiment.add_histogram(name,params,self.current_epoch)
-
-        epoch_dict_output = {
-            # required
-            'loss': avg_loss
-        }
-        
-        return epoch_dict_output
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)

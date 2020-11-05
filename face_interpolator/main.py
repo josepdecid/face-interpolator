@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     # TODO: Define config file
     dataset_root = '../datasets/CelebA'
-    batch_size = 32
+    batch_size = 64
     num_workers = 0
 
     transform = transforms.Compose([transforms.ToTensor()])
