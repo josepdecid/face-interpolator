@@ -1,3 +1,6 @@
+from typing import Any
+
+import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
@@ -88,6 +91,10 @@ class CelebADataModule(pl.LightningDataModule):
         self.num_workers = num_workers
 
         self.transform = transforms.Compose([transforms.ToTensor()])
+
+        self.train_set = None
+        self.val_set = None
+        self.test_set = None
 
     def prepare_data(self):
         pass
