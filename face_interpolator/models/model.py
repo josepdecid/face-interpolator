@@ -8,7 +8,7 @@ import torch
 from typing import Any
 
 
-class AutoEncoderModel(pl.LightningDataModule, ABC):
+class AutoEncoderModel(pl.LightningDataModule):
 
     def training_step(self, batch, batch_idx):
         # training_step defined the train loop. It is independent of forward
