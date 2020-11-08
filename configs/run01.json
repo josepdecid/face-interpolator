@@ -5,6 +5,6 @@
   "nodes": 1,
   "ntasks": 1,
   "cpu_per_task": 160,
-  "gres": "4",
+  "gres": "gpu:4",
   "time": "48:00:00"
 }
