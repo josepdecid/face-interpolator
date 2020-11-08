@@ -34,7 +34,7 @@ if __name__ == '__main__':
     bash_data = f"""#!/bin/bash
     
 #SBATCH --job-name={params['job_name']}
-#SBATCH --qos=training
+#SBATCH --qos=bsc_cs
 #SBATCH --workdir=face_interpolator
 #SBATCH --output={logs_path}.out
 #SBATCH --error={logs_path}.err
@@ -53,7 +53,7 @@ python {params['launcher']} {params['args']}
         f.write(bash_data)
 
     upload_command = f'scp -i .ssh/id_rsa -r {" ".join(DATA_TO_UPLOAD)} {args.user}@dt01.bsc.es:~/face-interpolator/.'
-    execute_command = f'ssh -i .ssh/id_rsa -t {args.user}@plogin1.bsc.es "cd face-interpolator; sbatch launcher.sh"'
+    execute_command = f'ssh -i .ssh/id_rsa -t {args.user}@plogin1.bsc.es "cd face-interpolator;sed -i.bak \'s/\r$//\' launcher.sh; sbatch launcher.sh"'
 
     print('[UPLOADING CODEBASE]')
     print(f'> {upload_command}')

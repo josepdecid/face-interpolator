@@ -1,0 +1,10 @@
+{
+  "launcher": "train.py",
+  "args": "--gpus 1 --job_name run01",
+  "job_name": "run01",
+  "nodes": 1,
+  "ntasks": 1,
+  "cpu_per_task": 160,
+  "gres": "4",
+  "time": "48:00:00"
+}
