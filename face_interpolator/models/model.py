@@ -31,6 +31,15 @@ class AutoEncoderModel(pl.LightningModule, ABC):
 
         return batch_dict_output
 
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        decoded, mu, logvar = self(x)
+
+        loss = F.mse_loss(decoded, x)
+        self.log('val_loss', loss)
+
+        return loss
+
     def training_epoch_end(self, outputs):
         # The function is called after every epoch is completed
 
