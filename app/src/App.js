@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 
 import './App.css';
 import ParametersContainer from './components/ParametersContainer';
-import PhotosContainer from './components/PhotosContainer';
+import PhotosContainer from './components/ImagesContainer';
 import ActionButtons from './components/ActionButtons';
 
 class App extends Component {

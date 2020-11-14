@@ -4,6 +4,8 @@ import { SERVER_URL } from '../constants';
 import { setDefaultParameters } from '../actions/parametersActions';
 import { connect } from 'react-redux';
 import { updateInterpolatedImage, updateOriginalImage } from '../actions/imagesActions';
+import Fab from '@material-ui/core/Fab';
+import PublishIcon from '@material-ui/icons/Publish';
 
 
 class ActionButtons extends Component {
@@ -16,7 +18,7 @@ class ActionButtons extends Component {
     handleSubmitImage(event) {
         event.preventDefault();
 
-        const file = this.originalImage.files[0];
+        const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = () => {
             this.props.updateOriginalImage(reader.result);
@@ -24,7 +26,7 @@ class ActionButtons extends Component {
         reader.readAsDataURL(file);
 
         const data = new FormData();
-        data.append('imageData', this.originalImage.files[0]);
+        data.append('imageData', file);
         const self = this;
         axios.post(`${SERVER_URL}/parametrize`, data)
             .then(function (response) {
@@ -50,13 +52,28 @@ class ActionButtons extends Component {
     }
 
     render() {
+        const style = {
+            margin: 0,
+            top: 'auto',
+            right: 20,
+            bottom: 20,
+            left: 'auto',
+            position: 'fixed',
+        };
+
         return <div>
-            <form onSubmit={this.handleSubmitImage}>
-                <input type="file" ref={(ref) => {
-                    this.originalImage = ref;
-                }}/>
-                <input type="submit" value="Submit"/>
-            </form>
+            <label htmlFor="upload-photo" style={style}>
+                <input
+                    onChange={this.handleSubmitImage}
+                    style={{ display: 'none' }}
+                    id="upload-photo"
+                    name="upload-photo"
+                    type="file"/>
+
+                <Fab color="primary" component="span" aria-label="Upload image">
+                    <PublishIcon/>
+                </Fab>
+            </label>
         </div>;
     }
 }
