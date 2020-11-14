@@ -89,7 +89,8 @@ class CelebADataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        self.transform = transforms.Compose([transforms.ToTensor()])
+        self.transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(
+            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
         self.train_set = None
         self.val_set = None
@@ -114,3 +115,8 @@ class CelebADataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         return DataLoader(self.test_set, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+if __name__ == '__main__':
+    import os
+    CelebADataModule(dataset_root = os.path.join('datasets', 'CelebA'))
+    print()
