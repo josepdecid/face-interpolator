@@ -1,10 +1,9 @@
 from argparse import ArgumentParser
 
 from pytorch_lightning import Trainer
-from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.loggers import TensorBoardLogger
 
-import os
 from face_interpolator.data.celeba_dataset import CelebADataModule
 from .models.cnn_vae import ConvVAE
 from .utils.system import join_path
@@ -17,7 +16,7 @@ def train():
     args = parser.parse_args()
 
     # TODO: Define config file
-    dataset_root = os.path.join('datasets', 'CelebA')
+    dataset_root = join_path('datasets', 'CelebA')
     batch_size = 64
     num_workers = 0
     bottleneck_size = 40

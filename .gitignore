@@ -137,6 +137,7 @@ datasets/*
 
 # Lightning logs
 face_interpolator/lightning_logs/*
+lightning_logs/*
 
 # Logs
 output/*
