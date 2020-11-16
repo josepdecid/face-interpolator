@@ -13,15 +13,16 @@ class _ResidualBlock(nn.Module):
         self.n_layers = n_layers
         self.kernel_size = kernel_size
         self.stride = stride
+        self.padding = 1
 
-        def build_layer(channels_in, channels_out, kernel_size, stride):
+        def build_layer(channels_in, channels_out, kernel_size, stride, padding):
             return nn.Sequential(nn.Conv2d(channels_in, channels_out, kernel_size=kernel_size,
-                                           padding=kernel_size//2, stride=stride),
+                                           padding=padding, stride=stride),
                                  nn.BatchNorm2d(channels_out),
                                  nn.LeakyReLU())
-        layers = [build_layer(self.channels_in, self.channels_out, self.kernel_size, self.stride)]
+        layers = [build_layer(self.channels_in, self.channels_out, self.kernel_size, self.stride, self.padding)]
         for i in range(n_layers-1):
-            layers.append(build_layer(self.channels_out, self.channels_out, self.kernel_size, 1))
+            layers.append(build_layer(self.channels_out, self.channels_out, self.kernel_size, 1, self.padding))
 
         self.layers = nn.ModuleList(layers)
 
@@ -46,20 +47,22 @@ class _UpsamplingResidualBlock(nn.Module):
         self.padding = padding
         self.n_layers = n_layers
         self.output_size = output_size
+        self.padding = 1
+        self.stride = 2
 
-        def build_layer(channels_in, channels_out, kernel_size, stride):
+        def build_layer(channels_in, channels_out, kernel_size, stride, padding):
             return nn.Sequential(nn.ConvTranspose2d(channels_in, channels_out, kernel_size=kernel_size,
-                                                    padding=kernel_size//2, stride=stride),
+                                                    padding=padding, stride=stride),
                                  nn.BatchNorm2d(channels_out),
                                  nn.LeakyReLU())
-        layers = [build_layer(self.channels_in, self.channels_out, self.kernel_size, 2)]
+        layers = [build_layer(self.channels_in, self.channels_out, self.kernel_size, 2, padding)]
         for i in range(n_layers-1):
-            layers.append(build_layer(self.channels_out, self.channels_out, self.kernel_size, 1))
+            layers.append(build_layer(self.channels_out, self.channels_out, self.kernel_size, 1, padding))
 
         self.layers = nn.ModuleList(layers)
 
         self.shortcut = nn.ConvTranspose2d(self.channels_in, self.channels_out, kernel_size=1,
-                                           stride=self.increase_size_factor)
+                                           stride=self.stride)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         shortcut = self.shortcut(x)
