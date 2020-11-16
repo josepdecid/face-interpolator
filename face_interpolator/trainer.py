@@ -13,13 +13,13 @@ def train():
     parser = ArgumentParser()
     parser = Trainer.add_argparse_args(parser)
     parser.add_argument('--job_name', type=str)
+    parser.add_argument('--bottleneck', type=int, default=128)
     args = parser.parse_args()
 
     # TODO: Define config file
     dataset_root = join_path('datasets', 'CelebA')
     batch_size = 64
     num_workers = 0
-    bottleneck_size = 40
 
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
 
@@ -31,6 +31,6 @@ def train():
         save_top_k=3,
         mode='min')
 
-    model = ConvVAE(bottleneck_size)
+    model = ConvVAE(args.bottleneck)
     trainer = Trainer.from_argparse_args(args, logger=logger, callbacks=[checkpoint_callback])
     trainer.fit(model, datamodule=celebA_data_module)

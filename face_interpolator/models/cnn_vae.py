@@ -1,10 +1,9 @@
-from .cnn import CNNDecoder
-from .cnn import CNNEncoder
+from face_interpolator.models.cnn import CNNDecoder
+from face_interpolator.models.cnn import CNNEncoder
 
-from .model import AutoEncoderModel
+from face_interpolator.models.model import AutoEncoderModel
 from typing import Any
 import torch
-import pytorch_lightning as pl
 
 
 class ConvVAE(AutoEncoderModel):
@@ -38,3 +37,8 @@ class ConvVAE(AutoEncoderModel):
 
     def decode(self, x: torch.Tensor) -> torch.Tensor:
         return self.decoder(x)
+
+if __name__ == '__main__':
+    model = ConvVAE(50)
+    data = torch.zeros(2, 3, 218, 178)
+    assert model(data)[0].shape == data.shape

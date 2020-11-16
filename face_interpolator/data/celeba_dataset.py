@@ -1,6 +1,3 @@
-from typing import Any
-
-import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
@@ -89,7 +86,8 @@ class CelebADataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        self.transform = transforms.Compose([transforms.ToTensor()])
+        self.transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5063, 0.4258, 0.3832),
+                                                                                         (0.2660, 0.2452, 0.2414))])
 
         self.train_set = None
         self.val_set = None

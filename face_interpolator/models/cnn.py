@@ -1,4 +1,6 @@
 import torch.nn as nn
+import torch.nn.functional as F
+import torch
 
 
 class CNNEncoder(nn.Module):
@@ -53,12 +55,14 @@ class CNNEncoder(nn.Module):
         )
 
         self.fc1 = nn.Linear(1024, 512)
+        self.fc1_bn = nn.BatchNorm1d(512)
         self.fc21 = nn.Linear(512, self.bottle_neck_size)
         self.fc22 = nn.Linear(512, self.bottle_neck_size)
 
     def forward(self, x):
         x = self.encoder(x)
         x = self.fc1(x.view(-1, 1024))
+        x = F.relu(self.fc1_bn(x))
         return self.fc21(x), self.fc22(x)
 
 
@@ -134,14 +138,17 @@ class CNNDecoder(nn.Module):
             # state size. 32 x 107 x 87
             # nn.MaxUnpool2d(2, 2),
             ConvTranspose2d(nn.ConvTranspose2d(32, channels, 7, stride=2, padding=1), output_size=(218, 178)),
-            nn.Sigmoid()
+
         )
 
         self.relu = nn.ReLU()
+        self.fc3_bn = nn.BatchNorm1d(512)
+        self.fc4_bn = nn.BatchNorm1d(1024)
 
     def forward(self, x):
-        x = self.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = self.relu(self.fc3_bn(self.fc3(x)))
+        x = self.fc4_bn(self.fc4(x))
         x = x.view(-1, 1024, 1, 1)
         x = self.decoder(x)
+        x = torch.tanh(x)
         return x
