@@ -7,6 +7,8 @@ import torch
 
 from typing import Any
 
+from face_interpolator.utils.klmse import MSEKLDLoss
+
 
 class AutoEncoderModel(pl.LightningModule, ABC):
 
@@ -23,7 +25,8 @@ class AutoEncoderModel(pl.LightningModule, ABC):
             self.logger.experiment.add_image('Input Images', grid_input, self.current_epoch)
             self.logger.experiment.add_image('Generated Images', grid_decoded, self.current_epoch)
 
-        loss = F.mse_loss(decoded, x)
+        loss = MSEKLDLoss()(decoded, x, mu, logvar)
+        # loss = F.mse_loss(decoded, x)
 
         batch_dict_output = {
             "loss": loss
@@ -35,7 +38,8 @@ class AutoEncoderModel(pl.LightningModule, ABC):
         x, y = batch
         decoded, mu, logvar = self(x)
 
-        loss = F.mse_loss(decoded, x)
+        loss = MSEKLDLoss()(decoded, x, mu, logvar)
+        # loss = F.mse_loss(decoded, x)
         self.log('val_loss', loss)
 
         return loss
