@@ -7,8 +7,9 @@ from PIL import Image
 from flask import Flask, jsonify
 from flask import request
 from flask_cors import CORS, cross_origin
-
+from torchvision import transforms
 from face_interpolator.models import ConvVAE
+from face_interpolator.utils.unormalize import UnNormalize
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -18,11 +19,14 @@ CORS(app, resources={
     r'/interpolate': {'origins': 'http://localhost:3000'}
 })
 
-CKPT_PATH = 'C:\\Users\\jdeci\\OneDrive\\Documentos\\Models\\e29.ckpt'
+CKPT_PATH = 'D:\\Users\\Albert\\Documents\\GitHub\\face_interpolator\\output\\run01-epoch=23-val_loss=0.33.ckpt'
+
+mean = [0.5063, 0.4258, 0.3832]
+std = [0.2660, 0.2452, 0.2414]
 
 
 def load_checkpoint():
-    model = ConvVAE.load_from_checkpoint(CKPT_PATH, bottleneck_size=100)
+    model = ConvVAE.load_from_checkpoint(CKPT_PATH, bottleneck_size=256)
     model.eval()
     return model
 
@@ -31,8 +35,13 @@ model = load_checkpoint()
 
 
 def normalize_image(img):
-    normalized_input = (img - np.amin(img)) / (np.amax(img) - np.amin(img))
-    return normalized_input
+    normalized_img = (img - np.array(mean)) / np.array(std)
+    return normalized_img
+
+
+def unnormalize_image(img):
+    unnormalized_img = img * np.array(std) + np.array(mean)
+    return unnormalized_img
 
 
 @app.route('/parametrize', methods=['POST'])
@@ -47,10 +56,10 @@ def extract_parameters():
 
     # TODO: BW images
 
-    img_norm = normalize_image(img_array)
-
-    img = torch.tensor(img_norm, dtype=torch.float)
-    img = img.permute(2, 0, 1).unsqueeze(0)
+    img = torch.tensor(img_array/255, dtype=torch.float)
+    img = img.permute(2, 0, 1)
+    img = transforms.Normalize((0.5063, 0.4258, 0.3832), (0.2660, 0.2452, 0.2414))(img)
+    img = img.unsqueeze(0)
 
     with torch.no_grad():
         mu, logvar = model.encode(img)
@@ -69,7 +78,9 @@ def interpolate():
         parameters = torch.tensor(parameters, dtype=torch.float).unsqueeze(0)
         interpolated_image = model.decode(parameters)
 
-    img = interpolated_image[0].permute(1, 2, 0).numpy()
+    unorm = UnNormalize(mean=(0.5063, 0.4258, 0.3832), std=(0.2660, 0.2452, 0.2414))
+    img = unorm(interpolated_image[0])
+    img = img.permute(1, 2, 0).numpy()
     img = Image.fromarray((img * 255).astype('uint8'))
     rawBytes = io.BytesIO()
     img.save(rawBytes, 'JPEG')

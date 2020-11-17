@@ -1,14 +1,16 @@
 from argparse import ArgumentParser
 
+import random
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torchvision
 from pytorch_lightning import Trainer
 
-from data import CelebADataModule
-from models import ConvVAE
-from utils import join_path
+from face_interpolator.data import CelebADataModule
+from face_interpolator.models import ConvVAE
+from face_interpolator.utils import join_path
+from face_interpolator.utils.unormalize import UnNormalize
 
 
 def imshow(img):
@@ -27,12 +29,12 @@ if __name__ == '__main__':
     dataset_root = join_path('datasets', 'CelebA')
     batch_size = 1
     num_workers = 0
-    bottleneck_size = 100
+    bottleneck_size = 256
 
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
     celebA_data_module.setup(stage='test')
     test_set = celebA_data_module.test_set
-    model = ConvVAE.load_from_checkpoint('./output/train_albert_v1/train_albert_v1-epoch=29-val_loss=0.02.ckpt',
+    model = ConvVAE.load_from_checkpoint('./output/run01-epoch=23-val_loss=0.33.ckpt',
                                          bottleneck_size=bottleneck_size)
     model.eval()
 
@@ -40,11 +42,16 @@ if __name__ == '__main__':
     # trainer = Trainer.from_argparse_args(args, checkpoint_callback=False, logger=False)
     # trainer.test(model, datamodule=celebA_data_module)
 
-    image, attributes = test_set[0]
+    rand_sample = random.randint(0, len(test_set)-1)
+    image, attributes = test_set[rand_sample]
     image = torch.reshape(image, (1, image.shape[-3], image.shape[-2], image.shape[-1]))
     decoded, mu, logvar = model(image)
     print("Encoded shape:", mu.shape)
     print("Decoded shape:", decoded.shape)
+
+    unorm = UnNormalize(mean=(0.5063, 0.4258, 0.3832), std=(0.2660, 0.2452, 0.2414))
+    unorm(image[0])
+    unorm(decoded[0])
 
     # show images
     imshow(torchvision.utils.make_grid([image[0], decoded[0]]).detach())
