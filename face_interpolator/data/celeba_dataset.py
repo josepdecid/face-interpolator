@@ -1,6 +1,7 @@
 from PIL import Image
 from torch.utils.data import Dataset
 
+from face_interpolator.constants import MEAN, STD
 from face_interpolator.utils.system import join_path
 
 import pytorch_lightning as pl
@@ -86,8 +87,14 @@ class CelebADataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        self.transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5063, 0.4258, 0.3832),
-                                                                                         (0.2660, 0.2452, 0.2414))])
+        self.transform = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomPerspective(distortion_scale=0.05, p=0.2),
+            transforms.RandomRotation(degrees=10),
+            transforms.ColorJitter(0.2, 0.2, 0.2, 0.1),
+            transforms.ToTensor(),
+            transforms.Normalize(MEAN, STD)
+        ])
 
         self.train_set = None
         self.val_set = None
