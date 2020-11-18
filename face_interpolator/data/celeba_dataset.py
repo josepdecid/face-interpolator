@@ -1,12 +1,11 @@
+import pytorch_lightning as pl
 from PIL import Image
+from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
+from torchvision import transforms
 
 from face_interpolator.constants import MEAN, STD
 from face_interpolator.utils.system import join_path
-
-import pytorch_lightning as pl
-from torch.utils.data import DataLoader
-from torchvision import transforms
 
 
 class CelebaDataset(Dataset):
