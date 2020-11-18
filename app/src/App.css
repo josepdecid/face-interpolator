@@ -43,7 +43,11 @@
 }
 
 .parameters-container {
-    height: 10em;
+    padding: 10% !important;
+    padding-top: 1em !important;
+    margin-bottom: 10% !important;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .fab {

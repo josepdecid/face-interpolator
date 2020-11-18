@@ -13,4 +13,4 @@ export default function parametersReducer(state = [], action) {
         default:
             return state;
     }
-}
+};

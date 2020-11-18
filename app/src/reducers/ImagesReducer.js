@@ -1,18 +1,17 @@
-import { UPDATE_INTERPOLATED_IMG, UPDATE_ORIGINAL_IMG } from '../actions/action_types';
+import { SWAP_CAMERA_STATUS, UPDATE_INTERPOLATED_IMG, UPDATE_ORIGINAL_IMG } from '../actions/action_types';
 
-export default function imagesReducer(state = { originalImage: null, interpolatedImage: null }, action) {
+const defaultState = { originalImage: null, interpolatedImage: null, isCameraOpen: false };
+
+
+export default function imagesReducer(state = defaultState, action) {
     switch (action.type) {
         case UPDATE_ORIGINAL_IMG:
-            return {
-                originalImage: action.imageData,
-                interpolatedImage: state.interpolatedImage
-            };
+            return { ...state, originalImage: action.imageData };
         case UPDATE_INTERPOLATED_IMG:
-            return {
-                originalImage: state.originalImage,
-                interpolatedImage: action.imageData
-            };
+            return { ...state, interpolatedImage: action.imageData };
+        case SWAP_CAMERA_STATUS:
+            return { ...state, isCameraOpen: !state.isCameraOpen };
         default:
             return state;
     }
-}
+};

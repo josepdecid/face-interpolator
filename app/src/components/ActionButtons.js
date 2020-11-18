@@ -3,16 +3,33 @@ import axios from 'axios';
 import { SERVER_URL } from '../constants';
 import { setDefaultParameters } from '../actions/parametersActions';
 import { connect } from 'react-redux';
-import { updateInterpolatedImage, updateOriginalImage } from '../actions/imagesActions';
+import { swapCameraStatus, updateInterpolatedImage, updateOriginalImage } from '../actions/imagesActions';
 import Fab from '@material-ui/core/Fab';
+import Camera from 'react-html5-camera-photo';
 import PublishIcon from '@material-ui/icons/Publish';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 
 
 class ActionButtons extends Component {
     constructor(props) {
         super(props);
 
+        this.handleSwapCameraStatus = this.handleSwapCameraStatus.bind(this);
         this.handleSubmitImage = this.handleSubmitImage.bind(this);
+    }
+
+    handleTakePhotoss(dataUri) {
+        // Do stuff with the photo...
+        console.log(dataUri);
+    }
+
+    handleSwapCameraStatus(event) {
+        event.preventDefault();
+        this.props.swapCameraStatus();
     }
 
     handleSubmitImage(event) {
@@ -52,17 +69,21 @@ class ActionButtons extends Component {
     }
 
     render() {
-        const style = {
+        const styles = {
             margin: 0,
             top: 'auto',
             right: 20,
-            bottom: 20,
             left: 'auto',
             position: 'fixed',
         };
 
         return <div>
-            <label htmlFor="upload-photo" style={style}>
+            <Fab color="primary" component="span" aria-label="Upload image"
+                 onClick={this.handleSwapCameraStatus} style={{ ...styles, bottom: 80 }}>
+                <PhotoCameraIcon/>
+            </Fab>
+
+            <label htmlFor="upload-photo" style={{ ...styles, bottom: 20 }}>
                 <input
                     onChange={this.handleSubmitImage}
                     style={{ display: 'none' }}
@@ -74,35 +95,33 @@ class ActionButtons extends Component {
                     <PublishIcon/>
                 </Fab>
             </label>
-        </div>;
-    }
-}
 
-const mapDispatchToProps = dispatch => ({
-    setDefaultParameters: (parameters) => dispatch(setDefaultParameters(parameters)),
-    updateOriginalImage: (imageData) => dispatch(updateOriginalImage(imageData)),
-    updateInterpolatedImage: (imageData) => dispatch(updateInterpolatedImage(imageData))
-});
-
-export default connect(null, mapDispatchToProps)(ActionButtons);
-
-/*
-            <Fab aria-label="Take photo" color="primary" className="fab" onClick={handleClickOpen}>
-                <CameraEnhanceIcon/>
-            </Fab>
-
-<Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+            <Dialog aria-labelledby="customized-dialog-title" open={this.props.isCameraOpen} fullWidth={true}>
                 <DialogContent>
-                    <Camera
-                        onTakePhoto={(dataUri) => {
-                            this.handleTakePhoto(dataUri);
-                        }}
-                    />
+                    <Camera/>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
+                    <Button autoFocus color="secondary" onClick={this.handleSwapCameraStatus}>
+                        Cancel
+                    </Button>
+                    <Button autoFocus color="primary">
                         Take picture
                     </Button>
                 </DialogActions>
             </Dialog>
- */
+        </div>;
+    }
+}
+
+const mapStateToProps = state => ({
+    isCameraOpen: state.images.isCameraOpen
+});
+
+const mapDispatchToProps = dispatch => ({
+    setDefaultParameters: (parameters) => dispatch(setDefaultParameters(parameters)),
+    updateOriginalImage: (imageData) => dispatch(updateOriginalImage(imageData)),
+    updateInterpolatedImage: (imageData) => dispatch(updateInterpolatedImage(imageData)),
+    swapCameraStatus: () => dispatch(swapCameraStatus())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActionButtons);

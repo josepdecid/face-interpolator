@@ -5,22 +5,24 @@ import './App.css';
 import ParametersContainer from './components/ParametersContainer';
 import PhotosContainer from './components/ImagesContainer';
 import ActionButtons from './components/ActionButtons';
+import Divider from '@material-ui/core/Divider';
+import SearchAppBar from './components/NavBarComponent';
 
 class App extends Component {
     render() {
-        return (
-            <div className="App">
-                <Grid container direction="column" className="App" spacing={2}>
-                    <Grid item xs={12} className="photos-container">
-                        <PhotosContainer/>
-                    </Grid>
-                    <Grid item xs={12} className="parameters-container">
-                        <ParametersContainer numParameters={5}/>
-                    </Grid>
+        return <div className="App">
+            <SearchAppBar/>
+            <Grid container direction="column" spacing={2}>
+                <Grid item xs={12} className="photos-container">
+                    <PhotosContainer/>
                 </Grid>
-                <ActionButtons/>
-            </div>
-        );
+                <Divider light/>
+                <Grid item xs={12} className="parameters-container">
+                    <ParametersContainer numParameters={5}/>
+                </Grid>
+            </Grid>
+            <ActionButtons/>
+        </div>;
     }
 }
 
