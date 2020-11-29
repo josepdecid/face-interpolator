@@ -1,9 +1,10 @@
 import pytorch_lightning as pl
+import torch
 from PIL import Image
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from torchvision import transforms
-
+import numpy as np
 from face_interpolator.constants import MEAN, STD
 from face_interpolator.utils.system import join_path
 
@@ -32,6 +33,7 @@ class CelebaDataset(Dataset):
         - size (int): Length of the dataset for the chosen data split.
         - transform (callable): Where transform arg is stored.
     """
+    image_attributes_size = 40
 
     def __init__(self, root, split="train", transform=None):
         self.root = root
@@ -49,6 +51,7 @@ class CelebaDataset(Dataset):
 
         if self.transform is not None:
             image = self.transform(image)
+            attributes = torch.from_numpy(attributes)
 
         return image, attributes
 
@@ -59,7 +62,7 @@ class CelebaDataset(Dataset):
             f.readline()
             for line in f.readlines():
                 line_attributes = line.split()
-                attributes_dict[line_attributes[0]] = line_attributes[1:]
+                attributes_dict[line_attributes[0]] = np.array(line_attributes[1:]).astype(np.float32)
 
         return attributes_dict
 
