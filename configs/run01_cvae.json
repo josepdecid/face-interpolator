@@ -1,7 +1,7 @@
 {
   "launcher": "train_cvae.py",
   "args": "--gpus 1 --job_name run01 --bottleneck 256",
-  "job_name": "run01",
+  "job_name": "run01_cvae",
   "nodes": 1,
   "ntasks": 1,
   "cpu_per_task": 160,
