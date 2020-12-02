@@ -8,16 +8,18 @@ import torchvision
 from pytorch_lightning import Trainer
 
 from constants import MEAN, STD
+from data.celeba_dataset import CelebaDataset
 from face_interpolator.data import CelebADataModule
 from face_interpolator.models import ConvVAE
 from face_interpolator.utils import join_path
 from face_interpolator.utils.unormalize import UnNormalize
+from models.conditional_vae import ConditionalConvVAE
 
 
 def imshow(img):
     npimg = img.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.title("VAE")
+    plt.title("Conditional VAE")
     plt.show()
 
 
@@ -32,12 +34,13 @@ if __name__ == '__main__':
     batch_size = 1
     num_workers = 0
     bottleneck_size = 256
+    attributes_size = CelebaDataset.image_attributes_size
 
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
     celebA_data_module.setup(stage='test')
     test_set = celebA_data_module.test_set
-    model = ConvVAE.load_from_checkpoint('./output/run01/checkpoints/run01-epoch=23-val_loss=0.33.ckpt',
-                                         bottleneck_size=bottleneck_size)
+    model = ConditionalConvVAE.load_from_checkpoint('./output/run01/checkpoints/run01-epoch=138-val_loss=2180395.50.ckpt',
+                                         bottleneck_size=bottleneck_size, attribute_size=attributes_size)
     model.eval()
     torch.set_grad_enabled(False)
 
@@ -48,7 +51,8 @@ if __name__ == '__main__':
     rand_sample = random.randint(0, len(test_set)-1)
     image, attributes = test_set[rand_sample]
     image = torch.reshape(image, (1, image.shape[-3], image.shape[-2], image.shape[-1]))
-    decoded, mu, logvar = model(image)
+    attributes = torch.reshape(attributes, (1, attributes.shape[-1]))
+    decoded, mu, logvar = model(image, attributes)
     print("Encoded shape:", mu.shape)
     print("Decoded shape:", decoded.shape)
 

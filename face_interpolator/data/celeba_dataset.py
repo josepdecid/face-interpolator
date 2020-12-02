@@ -98,6 +98,11 @@ class CelebADataModule(pl.LightningDataModule):
             transforms.Normalize(MEAN, STD)
         ])
 
+        self.test_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(MEAN, STD)
+        ])
+
         self.train_set = None
         self.val_set = None
         self.test_set = None
@@ -111,7 +116,7 @@ class CelebADataModule(pl.LightningDataModule):
             self.val_set = CelebaDataset(self.dataset_root, split='val', transform=self.transform)
 
         if stage == 'test' or stage is None:
-            self.test_set = CelebaDataset(self.dataset_root, split='test', transform=self.transform)
+            self.test_set = CelebaDataset(self.dataset_root, split='test', transform=self.test_transform)
 
     def train_dataloader(self):
         return DataLoader(self.train_set, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
