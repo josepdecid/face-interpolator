@@ -1,9 +1,10 @@
 import pytorch_lightning as pl
+import torch
 from PIL import Image
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from torchvision import transforms
-
+import numpy as np
 from face_interpolator.constants import MEAN, STD
 from face_interpolator.utils.system import join_path
 
@@ -32,6 +33,14 @@ class CelebaDataset(Dataset):
         - size (int): Length of the dataset for the chosen data split.
         - transform (callable): Where transform arg is stored.
     """
+    image_attributes_size = 40
+    attribute_names = ['5 o Clock Shadow', 'Arched Eyebrows', 'Attractive', 'Bags Under Eyes', 'Bald', 'Bangs',  # 0 - 5
+                       'Big Lips', 'Big Nose', 'Black Hair', 'Blond Hair', 'Blurry', 'Brown Hair', 'Bushy Eyebrows',  # 6 - 12
+                       'Chubby', 'Double Chin', 'Eyeglasses', 'Goatee', 'Gray Hair', 'Heavy Makeup', 'High Cheekbones',  # 13 - 19
+                       'Male', 'Mouth Slightly Open', 'Mustache', 'Narrow Eyes', 'No Beard', 'Oval Face', 'Pale Skin',  # 20 - 26
+                       'Pointy Nose', 'Receding Hairline', 'Rosy Cheeks', 'Sideburns', 'Smiling', 'Straight Hair',  # 27 - 32
+                       'Wavy Hair', 'Wearing Earrings', 'Wearing Hat', 'Wearing Lipstick', 'Wearing Necklace',  # 33 - 37
+                       'Wearing Necktie', 'Young']
 
     def __init__(self, root, split="train", transform=None):
         self.root = root
@@ -49,6 +58,7 @@ class CelebaDataset(Dataset):
 
         if self.transform is not None:
             image = self.transform(image)
+            attributes = torch.from_numpy(attributes)
 
         return image, attributes
 
@@ -59,7 +69,7 @@ class CelebaDataset(Dataset):
             f.readline()
             for line in f.readlines():
                 line_attributes = line.split()
-                attributes_dict[line_attributes[0]] = line_attributes[1:]
+                attributes_dict[line_attributes[0]] = np.array(line_attributes[1:]).astype(np.float32)
 
         return attributes_dict
 
@@ -95,6 +105,11 @@ class CelebADataModule(pl.LightningDataModule):
             transforms.Normalize(MEAN, STD)
         ])
 
+        self.test_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(MEAN, STD)
+        ])
+
         self.train_set = None
         self.val_set = None
         self.test_set = None
@@ -108,7 +123,7 @@ class CelebADataModule(pl.LightningDataModule):
             self.val_set = CelebaDataset(self.dataset_root, split='val', transform=self.transform)
 
         if stage == 'test' or stage is None:
-            self.test_set = CelebaDataset(self.dataset_root, split='test', transform=self.transform)
+            self.test_set = CelebaDataset(self.dataset_root, split='test', transform=self.test_transform)
 
     def train_dataloader(self):
         return DataLoader(self.train_set, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
