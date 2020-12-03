@@ -34,6 +34,13 @@ class CelebaDataset(Dataset):
         - transform (callable): Where transform arg is stored.
     """
     image_attributes_size = 40
+    attribute_names = ['5 o Clock Shadow', 'Arched Eyebrows', 'Attractive', 'Bags Under Eyes', 'Bald', 'Bangs',  # 0 - 5
+                       'Big Lips', 'Big Nose', 'Black Hair', 'Blond Hair', 'Blurry', 'Brown Hair', 'Bushy Eyebrows',  # 6 - 12
+                       'Chubby', 'Double Chin', 'Eyeglasses', 'Goatee', 'Gray Hair', 'Heavy Makeup', 'High Cheekbones',  # 13 - 19
+                       'Male', 'Mouth Slightly Open', 'Mustache', 'Narrow Eyes', 'No Beard', 'Oval Face', 'Pale Skin',  # 20 - 26
+                       'Pointy Nose', 'Receding Hairline', 'Rosy Cheeks', 'Sideburns', 'Smiling', 'Straight Hair',  # 27 - 32
+                       'Wavy Hair', 'Wearing Earrings', 'Wearing Hat', 'Wearing Lipstick', 'Wearing Necklace',  # 33 - 37
+                       'Wearing Necktie', 'Young']
 
     def __init__(self, root, split="train", transform=None):
         self.root = root

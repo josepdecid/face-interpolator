@@ -9,11 +9,14 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from torchvision import transforms
 
+from data.celeba_dataset import CelebaDataset
 from face_interpolator.constants import MEAN, STD, CELEBA_SIZE
 from face_interpolator.models import ConvVAE
 from face_interpolator.utils.unormalize import UnNormalize
 
 import matplotlib.pyplot as plt
+
+from models.conditional_vae import ConditionalConvVAE
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -23,11 +26,12 @@ CORS(app, resources={
     r'/interpolate': {'origins': 'http://localhost:3000'}
 })
 
-CKPT_PATH = 'C:\\Users\\jdeci\\OneDrive\\Escritorio\\plotsnigga\\run01-epoch=23-val_loss=0.33.ckpt'
+CKPT_PATH = '../output/run01_cvae/checkpoints/run01-epoch=138-val_loss=2180395.50.ckpt'
 
 
 def load_checkpoint():
-    model = ConvVAE.load_from_checkpoint(CKPT_PATH, bottleneck_size=256)
+    attributes_size = CelebaDataset.image_attributes_size
+    model = ConditionalConvVAE.load_from_checkpoint(CKPT_PATH, bottleneck_size=256, attribute_size=attributes_size)
     model.eval()
     return model
 
@@ -39,7 +43,7 @@ model = load_checkpoint()
 @cross_origin(origin='localhost', headers=['Content- Type'])
 def extract_parameters():
     file_str = request.files['imageData'].read()
-    img_np = np.fromstring(file_str, np.uint8)
+    img_np = np.frombuffer(file_str, np.uint8)
     img_array = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
     img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
 
@@ -51,18 +55,21 @@ def extract_parameters():
     img = torch.tensor(img / 255, dtype=torch.float)
 
     img = img.permute(2, 0, 1)
-    img = transforms.Normalize((0.5063, 0.4258, 0.3832), (0.2660, 0.2452, 0.2414))(img)
+    img = transforms.Normalize(MEAN, STD)(img)
     img = img.unsqueeze(0)
 
     plt.imshow(img[0].permute(1, 2, 0).numpy())
     plt.show()
-
+    attributes = torch.zeros(1, CelebaDataset.image_attributes_size)
+    # attributes = [-1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1,
+    #               1, -1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, 1]
+    # attributes = torch.FloatTensor(attributes).unsqueeze(0)
     with torch.no_grad():
-        mu, logvar = model.encode(img)
+        mu, logvar = model.encode(img, attributes)
         parameters = model.reparametrize(mu, logvar)
 
     # TODO: Parameters only 1 dimension, return all
-    return jsonify({'parameters': parameters[0].tolist()})
+    return jsonify({'parameters': attributes[0].tolist() + parameters[0].tolist()})
 
 
 @app.route('/interpolate', methods=['POST'])
@@ -72,16 +79,17 @@ def interpolate():
 
     with torch.no_grad():
         parameters = torch.tensor(parameters, dtype=torch.float).unsqueeze(0)
-        interpolated_image = model.decode(parameters)
+        interpolated_image = model.decode(parameters[:, CelebaDataset.image_attributes_size:],
+                                          parameters[:, :CelebaDataset.image_attributes_size])
 
     unorm = UnNormalize(mean=MEAN, std=STD)
     img = unorm(interpolated_image[0])
     img = img.permute(1, 2, 0).numpy()
     img = Image.fromarray((img * 255).astype('uint8'))
-    rawBytes = io.BytesIO()
-    img.save(rawBytes, 'JPEG')
-    rawBytes.seek(0)
-    img_base64 = base64.b64encode(rawBytes.read())
+    raw_bytes = io.BytesIO()
+    img.save(raw_bytes, 'JPEG')
+    raw_bytes.seek(0)
+    img_base64 = base64.b64encode(raw_bytes.read())
     return jsonify({'image': img_base64.decode()})
 
 
