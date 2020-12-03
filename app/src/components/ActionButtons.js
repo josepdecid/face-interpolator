@@ -47,8 +47,8 @@ class ActionButtons extends Component {
         const self = this;
         axios.post(`${SERVER_URL}/parametrize`, data)
             .then(function (response) {
-                const parameters = response.data.parameters;
-                self.props.setDefaultParameters(parameters);
+                const { parameters, attributeNames } = response.data;
+                self.props.setDefaultParameters(parameters, attributeNames);
                 self.updateInterpolatedImage(self, parameters);
             })
             .catch(function (error) {
@@ -118,7 +118,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setDefaultParameters: (parameters) => dispatch(setDefaultParameters(parameters)),
+    setDefaultParameters: (parameters, attributeNames) => dispatch(setDefaultParameters(parameters, attributeNames)),
     updateOriginalImage: (imageData) => dispatch(updateOriginalImage(imageData)),
     updateInterpolatedImage: (imageData) => dispatch(updateInterpolatedImage(imageData)),
     swapCameraStatus: () => dispatch(swapCameraStatus())

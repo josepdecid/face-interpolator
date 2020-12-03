@@ -1,0 +1,10 @@
+{
+  "launcher": "train_resnet.py",
+  "args": "--gpus 1 --job_name run01_resnet --attribute_size 40",
+  "job_name": "run01_resnet",
+  "nodes": 1,
+  "ntasks": 1,
+  "cpu_per_task": 160,
+  "gres": "gpu:4",
+  "time": "48:00:00"
+}

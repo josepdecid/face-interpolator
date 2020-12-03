@@ -5,10 +5,13 @@ import ParameterComponent from './ParameterComponent';
 
 class ParametersContainer extends Component {
     render() {
-        const sliders = this.props.parameters
+        const sliders = this.props.parameters.parameters
             .map((value, key) => {
-                if (`Parameters_${key}`.toLowerCase().includes(this.props.filterValue.toLowerCase())) {
-                    return <ParameterComponent name={`Parameter_${key}`} value={value} key={key} index={key}/>;
+                let parameterName = this.props.parameters.attributeNames[key];
+                if (parameterName === undefined) parameterName = `Unnamed Parameter #${key}`;
+
+                if (parameterName.toLowerCase().includes(this.props.filterValue.toLowerCase())) {
+                    return <ParameterComponent name={parameterName} value={value} key={key} index={key}/>;
                 } else {
                     return <span/>;
                 }
