@@ -5,9 +5,8 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
 from face_interpolator.data.celeba_dataset import CelebADataModule
-from models.resnet import ResNet
-from .models.cnn_vae import ConvVAE
-from .utils.system import join_path
+from face_interpolator.models.resnet import ResNet
+from face_interpolator.utils.system import join_path
 
 
 def train_resnet():

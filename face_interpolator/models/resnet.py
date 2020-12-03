@@ -2,7 +2,7 @@ import torch.nn.functional as F
 from torch import nn
 from torchvision.models import resnet50
 
-from models.attribute_model import AttributeModel
+from face_interpolator.models.attribute_model import AttributeModel
 
 
 class FullyConnectedModel(nn.Module):
