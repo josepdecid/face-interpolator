@@ -23,7 +23,7 @@ CORS(app, resources={
     r'/interpolate': {'origins': 'http://localhost:3000'}
 })
 
-CKPT_PATH = 'C:\\Users\\jdeci\\OneDrive\\Escritorio\\plotsnigga\\run01-epoch=23-val_loss=0.33.ckpt'
+CKPT_PATH = 'D:\\Users\\Albert\\Documents\\GitHub\\face_interpolator\\output\\run03-epoch=103-val_loss=2239237.75.ckpt'
 
 
 def load_checkpoint():
@@ -51,11 +51,8 @@ def extract_parameters():
     img = torch.tensor(img / 255, dtype=torch.float)
 
     img = img.permute(2, 0, 1)
-    img = transforms.Normalize((0.5063, 0.4258, 0.3832), (0.2660, 0.2452, 0.2414))(img)
+    img = transforms.Normalize(mean=MEAN, std=STD)(img)
     img = img.unsqueeze(0)
-
-    plt.imshow(img[0].permute(1, 2, 0).numpy())
-    plt.show()
 
     with torch.no_grad():
         mu, logvar = model.encode(img)

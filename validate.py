@@ -7,6 +7,7 @@ import torch
 import torchvision
 from pytorch_lightning import Trainer
 
+from face_interpolator.constants import MEAN, STD
 from face_interpolator.data import CelebADataModule
 from face_interpolator.models import ConvVAE
 from face_interpolator.utils import join_path
@@ -34,7 +35,7 @@ if __name__ == '__main__':
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
     celebA_data_module.setup(stage='test')
     test_set = celebA_data_module.test_set
-    model = ConvVAE.load_from_checkpoint('./output/run01-epoch=23-val_loss=0.33.ckpt',
+    model = ConvVAE.load_from_checkpoint('./output/run03-epoch=103-val_loss=2239237.75.ckpt',
                                          bottleneck_size=bottleneck_size)
     model.eval()
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     print("Encoded shape:", mu.shape)
     print("Decoded shape:", decoded.shape)
 
-    unorm = UnNormalize(mean=(0.5063, 0.4258, 0.3832), std=(0.2660, 0.2452, 0.2414))
+    unorm = UnNormalize(mean=MEAN, std=STD)
     unorm(image[0])
     unorm(decoded[0])
 
