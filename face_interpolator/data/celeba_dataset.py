@@ -59,6 +59,7 @@ class CelebaDataset(Dataset):
         if self.transform is not None:
             image = self.transform(image)
             attributes = torch.from_numpy(attributes)
+            attributes[attributes == -1] = 0
 
         return image, attributes
 

@@ -11,8 +11,11 @@ class ConditionalConvVAE(ConditionalAutoEncoderModel):
         super(ConditionalConvVAE, self).__init__()
 
         # Encoder
-        self.encoder = ConditionalEncoder(bottleneck_size, attribute_size, channels=channels)
+        self.encoder = ConditionalEncoder(bottleneck_size, channels=channels)
 
+        # Attr
+        self.attribute_predicter = torch.nn.Linear(bottleneck_size, attribute_size)
+        self.sigmoid = torch.nn.Sigmoid()
         # Decoder
         self.decoder = ConditionalDecoder(bottleneck_size, attribute_size, channels=channels)
 
@@ -25,14 +28,15 @@ class ConditionalConvVAE(ConditionalAutoEncoderModel):
 
         return eps.mul(std).add_(mu)
 
-    def forward(self, x, attributes):
-        mu, logvar = self.encode(x, attributes)
+    def forward(self, x):
+        mu, logvar = self.encode(x)
         z = self.reparametrize(mu, logvar)
-        decoded = self.decode(z, attributes)
-        return decoded, mu, logvar
+        pred_attr = self.sigmoid(self.attribute_predicter(z))
+        decoded = self.decode(z, pred_attr)
+        return decoded, mu, logvar, pred_attr
 
-    def encode(self, x: torch.Tensor, attributes: torch.Tensor) -> Any:
-        mu, logvar = self.encoder(x, attributes)
+    def encode(self, x: torch.Tensor) -> Any:
+        mu, logvar = self.encoder(x)
         return mu, logvar
 
     def decode(self, x: torch.Tensor, attributes: torch.Tensor) -> torch.Tensor:
