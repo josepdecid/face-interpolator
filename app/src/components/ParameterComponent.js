@@ -42,16 +42,17 @@ class ParameterComponent extends Component {
         return <div>
             <span>{this.props.name}</span>
             <Slider value={this.props.value}
-                    min={-30} max={30}
+                    min={-5} max={5} step={0.1}
                     onChange={(event, newValue) =>
                         this.handleChangeParameter(newValue)}
-                    orientation="horizontal"/>
+                    orientation="horizontal"
+                    aria-labelledby="continuous-slider"/>
         </div>
     }
 }
 
 const mapStateToProps = state => ({
-    parameters: state.parameters
+    parameters: state.parameters.parameters
 });
 
 const mapDispatchToProps = dispatch => ({

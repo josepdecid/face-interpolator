@@ -9,14 +9,10 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from torchvision import transforms
 
-from data.celeba_dataset import CelebaDataset
 from face_interpolator.constants import MEAN, STD, CELEBA_SIZE
-from face_interpolator.models import ConvVAE
+from face_interpolator.data.celeba_dataset import CelebaDataset
+from face_interpolator.models.conditional_vae import ConditionalConvVAE
 from face_interpolator.utils.unormalize import UnNormalize
-
-import matplotlib.pyplot as plt
-
-from models.conditional_vae import ConditionalConvVAE
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -58,18 +54,19 @@ def extract_parameters():
     img = transforms.Normalize(MEAN, STD)(img)
     img = img.unsqueeze(0)
 
-    plt.imshow(img[0].permute(1, 2, 0).numpy())
-    plt.show()
+    # plt.imshow(img[0].permute(1, 2, 0).numpy())
+    # plt.show()
     attributes = torch.zeros(1, CelebaDataset.image_attributes_size)
-    # attributes = [-1, 1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1,
-    #               1, -1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, 1]
-    # attributes = torch.FloatTensor(attributes).unsqueeze(0)
+
     with torch.no_grad():
         mu, logvar = model.encode(img, attributes)
         parameters = model.reparametrize(mu, logvar)
 
     # TODO: Parameters only 1 dimension, return all
-    return jsonify({'parameters': attributes[0].tolist() + parameters[0].tolist()})
+    return jsonify({
+        'attributeNames': CelebaDataset.attribute_names,
+        'parameters': attributes[0].tolist() + parameters[0].tolist()
+    })
 
 
 @app.route('/interpolate', methods=['POST'])
