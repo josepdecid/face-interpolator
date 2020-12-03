@@ -5,7 +5,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
 from face_interpolator.data.celeba_dataset import CelebADataModule, CelebaDataset
-from models.conditional_vae import ConditionalConvVAE
+from face_interpolator.models.conditional_vae import ConditionalConvVAE
 from .utils.system import join_path
 
 

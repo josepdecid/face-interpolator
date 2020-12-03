@@ -22,18 +22,20 @@ class AutoEncoderModel(pl.LightningModule, ABC):
         x, y = batch
         decoded, mu, logvar = self(x)
 
+        loss = MSEKLDLoss()(decoded, x, mu, logvar)
+
         # log images
         if batch_idx % 10 == 0:
             decoded_images = decoded.type_as(x)
-            grid_input = torchvision.utils.make_grid(x[:6])
-            grid_decoded = torchvision.utils.make_grid(decoded_images[:6])
 
-            grid_input = self.unorm(grid_input)
-            grid_decoded = self.unorm(grid_decoded)
+            unorm_input = [self.unorm(img) for img in x[:6].detach().clone()]
+            unorm_decoded = [self.unorm(img) for img in decoded_images[:6].detach().clone()]
+
+            grid_input = torchvision.utils.make_grid(unorm_input)
+            grid_decoded = torchvision.utils.make_grid(unorm_decoded)
+
             self.logger.experiment.add_image('Input Images', grid_input, self.current_epoch)
             self.logger.experiment.add_image('Generated Images', grid_decoded, self.current_epoch)
-
-        loss = MSEKLDLoss()(decoded, x, mu, logvar)
 
         return {"loss": loss}
 
