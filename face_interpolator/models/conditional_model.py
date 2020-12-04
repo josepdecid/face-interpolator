@@ -36,7 +36,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         loss, MSE, KLD, BCE = MSEKLDBCELoss()(decoded, x, mu, logvar, pred_attr, y)
 
         batch_dict_output = {
-            "loss": loss,
+            "train_loss": loss,
             'MSE': MSE,
             'KLD': KLD,
             'BCE': BCE
@@ -50,7 +50,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         loss, MSE, KLD, BCE = MSEKLDBCELoss()(decoded, x, mu, logvar, pred_attr, y)
 
         batch_dict_output = {
-            "loss": loss,
+            "val_loss": loss,
             'MSE': MSE,
             'KLD': KLD,
             'BCE': BCE
@@ -64,7 +64,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         loss, MSE, KLD, BCE = MSEKLDBCELoss()(decoded, x, mu, logvar, pred_attr, y)
 
         batch_dict_output = {
-            "loss": loss,
+            "test_loss": loss,
             'MSE': MSE,
             'KLD': KLD,
             'BCE': BCE
@@ -76,7 +76,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         # The function is called after every epoch is completed
 
         # Log average loss
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = torch.stack([x['train_loss'] for x in outputs]).mean()
         avg_mse = torch.stack([x['MSE'] for x in outputs]).mean()
         avg_kld = torch.stack([x['KLD'] for x in outputs]).mean()
         avg_bce = torch.stack([x['BCE'] for x in outputs]).mean()
@@ -90,7 +90,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         # The function is called after every validation epoch is completed
 
         # Log average loss
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
         avg_mse = torch.stack([x['MSE'] for x in outputs]).mean()
         avg_kld = torch.stack([x['KLD'] for x in outputs]).mean()
         avg_bce = torch.stack([x['BCE'] for x in outputs]).mean()
@@ -104,7 +104,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         # The function is called after every test epoch is completed
 
         # Log average loss
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = torch.stack([x['test_loss'] for x in outputs]).mean()
         avg_mse = torch.stack([x['MSE'] for x in outputs]).mean()
         avg_kld = torch.stack([x['KLD'] for x in outputs]).mean()
         avg_bce = torch.stack([x['BCE'] for x in outputs]).mean()

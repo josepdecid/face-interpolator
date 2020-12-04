@@ -36,7 +36,7 @@ class AutoEncoderModel(pl.LightningModule, ABC):
             self.logger.experiment.add_image('Input Images', grid_input, self.current_epoch)
             self.logger.experiment.add_image('Generated Images', grid_decoded, self.current_epoch)
 
-        return {"loss": loss}
+        return {"train_loss": loss}
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
@@ -44,7 +44,7 @@ class AutoEncoderModel(pl.LightningModule, ABC):
 
         loss = MSEKLDLoss()(decoded, x, mu, logvar)
 
-        return {"loss": loss}
+        return {"val_loss": loss}
 
     def test_step(self, batch, batch_idx):
         x, y = batch
@@ -52,27 +52,27 @@ class AutoEncoderModel(pl.LightningModule, ABC):
 
         loss = MSEKLDLoss()(decoded, x, mu, logvar)
 
-        return {"loss": loss}
+        return {"test_loss": loss}
 
     def training_epoch_end(self, outputs):
         # The function is called after every training epoch is completed
 
         # Log average loss
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = torch.stack([x['train_loss'] for x in outputs]).mean()
         self.logger.experiment.add_scalar("Loss/Train", avg_loss, self.current_epoch)
 
     def validation_epoch_end(self, outputs):
         # The function is called after every validation epoch is completed
 
         # Log average loss
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
         self.logger.experiment.add_scalar("Loss/Valid", avg_loss, self.current_epoch)
 
     def test_epoch_end(self, outputs):
         # The function is called after every test epoch is completed
 
         # Log average loss
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = torch.stack([x['test_loss'] for x in outputs]).mean()
         self.logger.experiment.add_scalar("Loss/Test", avg_loss, self.current_epoch)
 
     def configure_optimizers(self):
