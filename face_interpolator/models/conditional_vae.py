@@ -3,7 +3,7 @@ from typing import Any
 import torch
 
 from face_interpolator.models.conditional_cnn import ConditionalEncoder, ConditionalDecoder
-from face_interpolator.models.conditional_model import ConditionalAutoEncoderModel
+from face_interpolator.models.model import ConditionalAutoEncoderModel
 
 
 class ConditionalConvVAE(ConditionalAutoEncoderModel):

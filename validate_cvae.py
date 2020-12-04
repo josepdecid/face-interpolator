@@ -7,7 +7,7 @@ import torch
 import torchvision
 from pytorch_lightning import Trainer
 
-from constants import MEAN, STD
+from utils.constants import MEAN, STD
 from data.celeba_dataset import CelebaDataset
 from face_interpolator.data import CelebADataModule
 from face_interpolator.models import ConvVAE

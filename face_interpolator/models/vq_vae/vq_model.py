@@ -7,7 +7,6 @@ from torch import nn
 from typing import Any
 
 from face_interpolator.utils.constants import MEAN, STD
-from face_interpolator.utils.klmse import MSEKLDLoss
 from face_interpolator.utils.unormalize import UnNormalize
 
 

@@ -1,6 +1,6 @@
 {
   "launcher": "train.py",
-  "args": "--gpus 1 --job_name run01 --bottleneck 256",
+  "args": "--gpus 1 --job-name run01 --bottleneck 256 --model vae",
   "job_name": "run01",
   "nodes": 1,
   "ntasks": 1,

@@ -1,6 +1,6 @@
 {
-  "launcher": "train_vq_vae.py",
-  "args": "--gpus 1 --job_name run01_vq_vae",
+  "launcher": "train.py",
+  "args": "--gpus 1 --job-name run01_vq_vae --model vqvae",
   "job_name": "run01_vq_vae",
   "nodes": 1,
   "ntasks": 1,

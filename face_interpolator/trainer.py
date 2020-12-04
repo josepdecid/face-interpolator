@@ -5,16 +5,20 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
 from face_interpolator.data.celeba_dataset import CelebADataModule
-from .models.cnn_vae import ConvVAE
-from .utils.system import join_path
+from face_interpolator.utils.system import join_path
+from face_interpolator.models.model_factory import ModelFactory
 
 
 def train():
     parser = ArgumentParser()
     parser = Trainer.add_argparse_args(parser)
-    parser.add_argument('--job_name', type=str)
+    parser.add_argument('--job-name', type=str)
     parser.add_argument('--bottleneck', type=int, default=128)
+    parser.add_argument('--model', type=str, choices=ModelFactory.available_models())
+    parser.add_argument('--attribute-size', type=int, default=128)
     args = parser.parse_args()
+
+    model = ModelFactory(args)
 
     # TODO: Define config file
     dataset_root = join_path('datasets', 'CelebA')
@@ -31,6 +35,5 @@ def train():
         save_top_k=3,
         mode='min')
 
-    model = ConvVAE(args.bottleneck)
     trainer = Trainer.from_argparse_args(args, logger=logger, callbacks=[checkpoint_callback])
     trainer.fit(model, datamodule=celebA_data_module)
