@@ -7,7 +7,7 @@ import torch
 import torchvision
 from pytorch_lightning import Trainer
 
-from face_interpolator.constants import MEAN, STD
+from face_interpolator.utils.constants import MEAN, STD
 from face_interpolator.data import CelebADataModule
 from face_interpolator.models import ConvVAE
 from face_interpolator.utils import join_path

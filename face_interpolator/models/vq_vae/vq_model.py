@@ -3,7 +3,7 @@ from abc import ABC
 import pytorch_lightning as pl
 import torchvision
 import torch
-
+from torch import nn
 from typing import Any
 
 from face_interpolator.utils.constants import MEAN, STD
@@ -11,17 +11,20 @@ from face_interpolator.utils.klmse import MSEKLDLoss
 from face_interpolator.utils.unormalize import UnNormalize
 
 
-class AutoEncoderModel(pl.LightningModule, ABC):
+class VQAutoEncoderModel(pl.LightningModule, ABC):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.unorm = UnNormalize(mean=MEAN, std=STD)
+        self.latent_loss_weight = 0.25
 
     def training_step(self, batch, batch_idx):
         # training_step defined the train loop. It is independent of forward
         x, y = batch
-        decoded, mu, logvar = self(x)
+        decoded, latent_loss = self(x)
 
-        loss = MSEKLDLoss()(decoded, x, mu, logvar)
+        recon_loss = nn.MSELoss()(decoded, x)
+        latent_loss = latent_loss.mean()
+        loss = recon_loss + self.latent_loss_weight * latent_loss
 
         # log images
         if batch_idx % 10 == 0:
@@ -40,17 +43,21 @@ class AutoEncoderModel(pl.LightningModule, ABC):
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        decoded, mu, logvar = self(x)
+        decoded, latent_loss = self(x)
 
-        loss = MSEKLDLoss()(decoded, x, mu, logvar)
+        recon_loss = nn.MSELoss()(decoded, x)
+        latent_loss = latent_loss.mean()
+        loss = recon_loss + self.latent_loss_weight * latent_loss
 
         return {"loss": loss}
 
     def test_step(self, batch, batch_idx):
         x, y = batch
-        decoded, mu, logvar = self(x)
+        decoded, latent_loss = self(x)
 
-        loss = MSEKLDLoss()(decoded, x, mu, logvar)
+        recon_loss = nn.MSELoss()(decoded, x)
+        latent_loss = latent_loss.mean()
+        loss = recon_loss + self.latent_loss_weight * latent_loss
 
         return {"loss": loss}
 
@@ -82,5 +89,5 @@ class AutoEncoderModel(pl.LightningModule, ABC):
     def encode(self, x: torch.Tensor) -> Any:
         raise NotImplementedError()
 
-    def decode(self, x: torch.Tensor) -> torch.Tensor:
+    def decode(self, quant_t: torch.Tensor, quant_b: torch.Tensor) -> torch.Tensor:
         raise NotImplementedError()

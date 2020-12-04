@@ -1,0 +1,10 @@
+{
+  "launcher": "train_vq_vae.py",
+  "args": "--gpus 1 --job_name run01_vq_vae",
+  "job_name": "run01_vq_vae",
+  "nodes": 1,
+  "ntasks": 1,
+  "cpu_per_task": 160,
+  "gres": "gpu:4",
+  "time": "48:00:00"
+}

@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from torchvision import transforms
 import numpy as np
-from face_interpolator.constants import MEAN, STD
+from face_interpolator.utils.constants import MEAN, STD
 from face_interpolator.utils.system import join_path
 
 

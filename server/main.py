@@ -9,7 +9,7 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from torchvision import transforms
 
-from face_interpolator.constants import MEAN, STD, CELEBA_SIZE
+from face_interpolator.utils.constants import MEAN, STD, CELEBA_SIZE
 from face_interpolator.data.celeba_dataset import CelebaDataset
 from face_interpolator.models.conditional_vae import ConditionalConvVAE
 from face_interpolator.utils.unormalize import UnNormalize

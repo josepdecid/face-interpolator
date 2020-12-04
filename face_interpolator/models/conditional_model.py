@@ -5,7 +5,7 @@ import pytorch_lightning as pl
 import torch
 import torchvision
 
-from face_interpolator.constants import MEAN, STD
+from face_interpolator.utils.constants import MEAN, STD
 from face_interpolator.utils.klmse_bce import MSEKLDBCELoss
 from face_interpolator.utils.unormalize import UnNormalize
 
