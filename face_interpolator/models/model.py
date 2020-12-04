@@ -24,7 +24,7 @@ class AutoEncoderModel(pl.LightningModule, ABC):
         loss = MSEKLDLoss()(decoded, x, mu, logvar)
 
         # log images
-        if batch_idx % 10 == 0:
+        if batch_idx % 1000 == 0:
             decoded_images = decoded.type_as(x)
 
             unorm_input = [self.unorm(img) for img in x[:6].detach().clone()]

@@ -21,7 +21,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         decoded, mu, logvar, pred_attr = self(x)
 
         # log images
-        if batch_idx % 10 == 0:
+        if batch_idx % 1000 == 0:
             decoded_images = decoded.type_as(x)
 
             unorm_input = [self.unorm(img) for img in x[:6].detach().clone()]
