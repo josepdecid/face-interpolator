@@ -49,6 +49,8 @@ class VQAutoEncoderModel(pl.LightningModule, ABC):
         latent_loss = latent_loss.mean()
         loss = recon_loss + self.latent_loss_weight * latent_loss
 
+        self.log('val_loss', loss)
+
         return {"val_loss": loss}
 
     def test_step(self, batch, batch_idx):

@@ -44,6 +44,8 @@ class AutoEncoderModel(pl.LightningModule, ABC):
 
         loss = MSEKLDLoss()(decoded, x, mu, logvar)
 
+        self.log('val_loss', loss)
+
         return {"val_loss": loss}
 
     def test_step(self, batch, batch_idx):

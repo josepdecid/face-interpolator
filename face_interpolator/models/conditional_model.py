@@ -49,6 +49,8 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         decoded, mu, logvar, pred_attr = self(x)
         loss, MSE, KLD, BCE = MSEKLDBCELoss()(decoded, x, mu, logvar, pred_attr, y)
 
+        self.log('val_loss', loss)
+
         batch_dict_output = {
             "val_loss": loss,
             'MSE': MSE,
