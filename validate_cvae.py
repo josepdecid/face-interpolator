@@ -10,10 +10,9 @@ from pytorch_lightning import Trainer
 from constants import MEAN, STD
 from data.celeba_dataset import CelebaDataset
 from face_interpolator.data import CelebADataModule
-from face_interpolator.models import ConvVAE
 from face_interpolator.utils import join_path
 from face_interpolator.utils.unormalize import UnNormalize
-from models.conditional_vae import ConditionalConvVAE
+from models.conditional_predictive_vae.conditional_vae import ConditionalConvVAE
 
 
 def imshow(img):

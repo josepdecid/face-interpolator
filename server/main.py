@@ -11,7 +11,7 @@ from torchvision import transforms
 
 from face_interpolator.utils.constants import MEAN, STD, CELEBA_SIZE
 from face_interpolator.data.celeba_dataset import CelebaDataset
-from face_interpolator.models.conditional_vae import ConditionalConvVAE
+from models.conditional_vae import ConditionalConvVAE
 from face_interpolator.utils.unormalize import UnNormalize
 
 app = Flask(__name__)
