@@ -1,6 +1,7 @@
 import base64
-import cv2
 import io
+
+import cv2
 import numpy as np
 import torch
 from PIL import Image
@@ -9,10 +10,10 @@ from flask import request
 from flask_cors import CORS, cross_origin
 from torchvision import transforms
 
-from face_interpolator.utils.constants import MEAN, STD, CELEBA_SIZE
 from face_interpolator.data.celeba_dataset import CelebaDataset
-from models.conditional_vae import ConditionalConvVAE
+from face_interpolator.utils.constants import MEAN, STD, CELEBA_SIZE
 from face_interpolator.utils.unormalize import UnNormalize
+from models.conditional_predictive_vae.conditional_vae import ConditionalConvVAE
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -22,7 +23,7 @@ CORS(app, resources={
     r'/interpolate': {'origins': 'http://localhost:3000'}
 })
 
-CKPT_PATH = '../output/run01_cvae/checkpoints/run01-epoch=138-val_loss=2180395.50.ckpt'
+CKPT_PATH = '../output/run09_cvae/checkpoints/run09_cvae-epoch=286-val_loss=2108884.25.ckpt'
 
 
 def load_checkpoint():
@@ -54,15 +55,11 @@ def extract_parameters():
     img = transforms.Normalize(mean=MEAN, std=STD)(img)
     img = img.unsqueeze(0)
 
-    # plt.imshow(img[0].permute(1, 2, 0).numpy())
-    # plt.show()
-    attributes = torch.zeros(1, CelebaDataset.image_attributes_size)
-
     with torch.no_grad():
-        mu, logvar = model.encode(img, attributes)
+        mu, logvar = model.encode(img)
         parameters = model.reparametrize(mu, logvar)
+        attributes = model.predict_attributes(parameters)
 
-    # TODO: Parameters only 1 dimension, return all
     return jsonify({
         'attributeNames': CelebaDataset.attribute_names,
         'parameters': attributes[0].tolist() + parameters[0].tolist()

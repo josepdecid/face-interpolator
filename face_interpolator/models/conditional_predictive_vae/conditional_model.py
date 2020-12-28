@@ -120,7 +120,7 @@ class ConditionalAutoEncoderModel(pl.LightningModule, ABC):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer
 
-    def encode(self, x: torch.Tensor, attributes: torch.Tensor) -> Any:
+    def encode(self, x: torch.Tensor) -> Any:
         raise NotImplementedError()
 
     def decode(self, x: torch.Tensor, attributes: torch.Tensor) -> torch.Tensor:
