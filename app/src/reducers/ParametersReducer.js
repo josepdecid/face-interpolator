@@ -2,7 +2,8 @@ import { SET_PARAMETERS, UPDATE_PARAMETER } from '../actions/action_types';
 
 const defaultState = {
     parameters: [],
-    attributeNames: []
+    attributeNames: [],
+    maxVarianceIdx: []
 }
 
 export default function parametersReducer(state = defaultState, action) {
@@ -10,15 +11,16 @@ export default function parametersReducer(state = defaultState, action) {
         case SET_PARAMETERS:
             return {
                 parameters: action.parameters,
-                attributeNames: action.attributeNames
+                attributeNames: action.attributeNames,
+                maxVarianceIdx: action.maxVarianceIdx
             };
 
         case UPDATE_PARAMETER:
             const newParameters = [...state.parameters];
             newParameters[action.index] = action.newValue;
             return {
+                ...state,
                 parameters: newParameters,
-                attributeNames: [...state.attributeNames]
             }
 
         default:

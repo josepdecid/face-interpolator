@@ -4,12 +4,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade, withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { updateFilterText } from '../actions/filterActions';
+import { updateFilterText, updateFilterValues } from '../actions/filterActions';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = theme => ({
     root: {
@@ -77,6 +79,14 @@ class SearchAppBar extends Component {
         this.props.updateFilterText(event.target.value);
     }
 
+    handleChangeFilterValues(event, key) {
+        event.preventDefault();
+
+        const parameters = this.props.filterValues;
+        parameters[key] = event.target.checked;
+        this.props.updateFilterValues(parameters);
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -94,12 +104,33 @@ class SearchAppBar extends Component {
                         <Typography className={classes.title} variant="h6" noWrap>
                             Face Interpolator
                         </Typography>
+                        <FormControlLabel
+                            control={<Checkbox name="Show Attributes"
+                                               checked={this.props.filterValues.showAttributes}
+                                               onChange={ev => this.handleChangeFilterValues(ev, 'showAttributes')}/>}
+                            label="Show Attributes"
+                        />
+
+                        <FormControlLabel
+                            control={<Checkbox name="Show Parameters"
+                                               checked={this.props.filterValues.showParameters}
+                                               onChange={ev => this.handleChangeFilterValues(ev, 'showParameters')}/>}
+                            label="Show Parameters"
+                        />
+
+                        <FormControlLabel
+                            control={<Checkbox name="Sort by Variance"
+                                               checked={this.props.filterValues.sortByVariance}
+                                               onChange={ev => this.handleChangeFilterValues(ev, 'sortByVariance')}/>}
+                            label="Sort by Variance"
+                        />
+
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon/>
                             </div>
                             <InputBase
-                                value={this.props.filterValue}
+                                value={this.props.filterText}
                                 onChange={this.handleChangeFilterText}
                                 placeholder="Filter…"
                                 classes={{
@@ -117,11 +148,13 @@ class SearchAppBar extends Component {
 }
 
 const mapStateToProps = state => ({
-    filterValue: state.filter.text
+    filterText: state.filter.text,
+    filterValues: state.filter.values
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateFilterText: (text) => dispatch(updateFilterText(text))
+    updateFilterText: (text) => dispatch(updateFilterText(text)),
+    updateFilterValues: (parameters) => dispatch(updateFilterValues(parameters))
 });
 
 SearchAppBar = withStyles(useStyles)(SearchAppBar);

@@ -60,9 +60,12 @@ def extract_parameters():
         parameters = model.reparametrize(mu, logvar)
         attributes = model.predict_attributes(parameters)
 
+        sorted_idx_by_variance = np.argsort(logvar[0].numpy())[::-1]
+
     return jsonify({
         'attributeNames': CelebaDataset.attribute_names,
-        'parameters': attributes[0].tolist() + parameters[0].tolist()
+        'parameters': attributes[0].tolist() + parameters[0].tolist(),
+        'maxVarianceIdx': sorted_idx_by_variance.tolist()
     })
 
 
