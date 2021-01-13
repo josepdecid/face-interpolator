@@ -1,8 +1,0 @@
-{
-  "launcher": "face_interpolator/b.py",
-  "args": "--bs 16 --epochs 100 asdasd",
-  "job_name": "train_baseline_vae",
-  "cpu_per_task": "50",
-  "gres": 4,
-  "time": "00:10:00"
-}

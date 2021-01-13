@@ -1,6 +1,6 @@
 {
-  "launcher": "train_resnet.py",
-  "args": "--gpus 1 --job_name run01_resnet --attribute_size 40",
+  "launcher": "train.py",
+  "args": "--gpus 1 --job_name run01_resnet --bottleneck 40 --net_name ResNet",
   "job_name": "run01_resnet",
   "nodes": 1,
   "ntasks": 1,

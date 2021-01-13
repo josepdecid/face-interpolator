@@ -1,10 +1,9 @@
 from abc import ABC
+from typing import Any
 
 import pytorch_lightning as pl
-import torchvision
 import torch
-
-from typing import Any
+import torchvision
 
 from face_interpolator.utils.constants import MEAN, STD
 from face_interpolator.utils.klmse import MSEKLDLoss

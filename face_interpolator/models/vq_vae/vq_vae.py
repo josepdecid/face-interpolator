@@ -1,9 +1,10 @@
 import torch
 from torch import nn
-from face_interpolator.models.vq_vae.encoder import Encoder
-from face_interpolator.models.vq_vae.decoder import Decoder
-from face_interpolator.models.vq_vae.quantize import Quantize
-from face_interpolator.models.vq_vae.vq_model import VQAutoEncoderModel
+
+from models.vq_vae.decoder import Decoder
+from models.vq_vae.encoder import Encoder
+from models.vq_vae.quantize import Quantize
+from models.vq_vae.vq_model import VQAutoEncoderModel
 
 
 # Copyright 2018 The Sonnet Authors. All Rights Reserved.
@@ -27,14 +28,14 @@ from face_interpolator.models.vq_vae.vq_model import VQAutoEncoderModel
 
 class VQVAE(VQAutoEncoderModel):
     def __init__(
-        self,
-        in_channel=3,
-        channel=128,
-        n_res_block=2,
-        n_res_channel=32,
-        embed_dim=64,
-        n_embed=512,
-        decay=0.99,
+            self,
+            in_channel=3,
+            channel=128,
+            n_res_block=2,
+            n_res_channel=32,
+            embed_dim=64,
+            n_embed=512,
+            decay=0.99,
     ):
         super(VQVAE, self).__init__()
 

@@ -1,5 +1,5 @@
-from face_interpolator.models.cnn import CNNDecoder
-from face_interpolator.models.cnn import CNNEncoder
+from models.vanilla_vae.cnn import CNNDecoder
+from models.vanilla_vae.cnn import CNNEncoder
 
 from face_interpolator.models.model import AutoEncoderModel
 from typing import Any

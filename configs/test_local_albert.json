@@ -1,8 +1,0 @@
-{
-  "launcher": "train.py",
-  "args": "--gpus 1 --job_name train_albert_v1",
-  "job_name": "train_albert_v1",
-  "cpu_per_task": "50",
-  "gres": 4,
-  "time": "00:10:00"
-}
