@@ -37,7 +37,7 @@ if __name__ == '__main__':
     celebA_data_module = CelebADataModule(dataset_root, batch_size, num_workers)
     celebA_data_module.setup(stage='test')
     test_set = celebA_data_module.test_set
-    model = ConditionalConvVAE.load_from_checkpoint('./output/run01/checkpoints/run01-epoch=138-val_loss=2180395.50.ckpt',
+    model = ConditionalConvVAE.load_from_checkpoint('./output/run01/checkpoints/run09_cvae-epoch=286-val_loss=2108884.25.ckpt',
                                          bottleneck_size=bottleneck_size, attribute_size=attributes_size)
     model.eval()
     torch.set_grad_enabled(False)

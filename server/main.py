@@ -97,8 +97,10 @@ def interpolate():
 
 
 def is_valid_user(authorization_header):
-    user_data = jwt.decode(authorization_header.split(' ')[-1], os.environ.get('JWT_SECRET', ''))
-    return set({}) == set(user_data.keys())
+    if authorization_header is not None:
+        user_data = jwt.decode(authorization_header.split(' ')[-1], os.environ.get('JWT_SECRET', ''), algorithms=["HS256"])
+        return {'name', 'models', 'nif', 'quota'} == set(user_data.keys())
+    return True
 
 
 if __name__ == '__main__':
