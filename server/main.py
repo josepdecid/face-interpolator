@@ -1,8 +1,9 @@
 import base64
-import io
-
 import cv2
+import io
+import jwt
 import numpy as np
+import os
 import torch
 from PIL import Image
 from flask import Flask, jsonify
@@ -39,6 +40,9 @@ model = load_checkpoint()
 @app.route('/parametrize', methods=['POST'])
 @cross_origin(origin='localhost', headers=['Content- Type'])
 def extract_parameters():
+    if not is_valid_user(request.headers.get('Authorization')):
+        return {'status_code': 401}
+
     file_str = request.files['imageData'].read()
     img_np = np.frombuffer(file_str, np.uint8)
     img_array = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
@@ -71,6 +75,9 @@ def extract_parameters():
 @app.route('/interpolate', methods=['POST'])
 @cross_origin(origin='localhost', headers=['Content- Type'])
 def interpolate():
+    if not is_valid_user(request.headers.get('Authorization')):
+        return {'status_code': 401}
+
     parameters = request.get_json().get('parameters')
 
     with torch.no_grad():
@@ -87,6 +94,11 @@ def interpolate():
     raw_bytes.seek(0)
     img_base64 = base64.b64encode(raw_bytes.read())
     return jsonify({'image': img_base64.decode()})
+
+
+def is_valid_user(authorization_header):
+    user_data = jwt.decode(authorization_header.split(' ')[-1], os.environ.get('JWT_SECRET', ''))
+    return set({}) == set(user_data.keys())
 
 
 if __name__ == '__main__':
