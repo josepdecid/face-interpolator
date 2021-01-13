@@ -47,7 +47,6 @@ def extract_parameters():
     if img_array.shape[2] == 4:
         img_array = img_array[:, :, :3]
 
-    # TODO: BW images
     img = cv2.resize(img_array, (CELEBA_SIZE[1], CELEBA_SIZE[0]), interpolation=cv2.INTER_AREA)
     img = torch.tensor(img / 255, dtype=torch.float)
 

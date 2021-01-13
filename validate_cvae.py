@@ -7,12 +7,12 @@ import torch
 import torchvision
 from pytorch_lightning import Trainer
 
-from constants import MEAN, STD
 from data.celeba_dataset import CelebaDataset
 from face_interpolator.data import CelebADataModule
 from face_interpolator.utils import join_path
 from face_interpolator.utils.unormalize import UnNormalize
 from models.conditional_predictive_vae.conditional_vae import ConditionalConvVAE
+from utils.constants import MEAN, STD
 
 
 def imshow(img):
@@ -28,7 +28,6 @@ if __name__ == '__main__':
     parser.add_argument('--job_name', type=str)
     args = parser.parse_args()
 
-    # TODO: Define config file
     dataset_root = join_path('datasets', 'CelebA')
     batch_size = 1
     num_workers = 0

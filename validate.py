@@ -9,9 +9,9 @@ from pytorch_lightning import Trainer
 
 from face_interpolator.utils.constants import MEAN, STD
 from face_interpolator.data import CelebADataModule
-from face_interpolator.models import ConvVAE
 from face_interpolator.utils import join_path
 from face_interpolator.utils.unormalize import UnNormalize
+from models.vanilla_vae import ConvVAE
 
 
 def imshow(img):
@@ -27,7 +27,6 @@ if __name__ == '__main__':
     parser.add_argument('--job_name', type=str)
     args = parser.parse_args()
 
-    # TODO: Define config file
     dataset_root = join_path('datasets', 'CelebA')
     batch_size = 1
     num_workers = 0
