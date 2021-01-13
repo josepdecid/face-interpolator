@@ -13,7 +13,7 @@ from torchvision import transforms
 from face_interpolator.data.celeba_dataset import CelebaDataset
 from face_interpolator.utils.constants import MEAN, STD, CELEBA_SIZE
 from face_interpolator.utils.unormalize import UnNormalize
-from models import ConditionalConvVAE
+from models.conditional_predictive_vae.conditional_vae import ConditionalConvVAE
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
